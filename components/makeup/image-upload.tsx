@@ -176,14 +176,14 @@ export function ImageUpload() {
             </div>
 
             <div className="space-y-2">
-              <p className="text-lg font-medium text-gray-800">{statusText.title}</p>
-              <p className="text-sm text-gray-600">{statusText.subtitle}</p>
+              <p className="text-lg font-medium">{statusText.title}</p>
+              <p className="text-sm text-muted-foreground">{statusText.subtitle}</p>
             </div>
 
             {uploadStatus === "idle" && (
               <Button
                 variant="outline"
-                className="mt-4 border-rose-200 text-rose-700 hover:bg-rose-50 hover:border-rose-300 bg-transparent"
+                className="mt-4 border-rose-200 text-rose-500 hover:bg-rose-50 hover:border-rose-300 bg-transparent"
               >
                 Choose File
               </Button>
@@ -192,7 +192,7 @@ export function ImageUpload() {
             {uploadStatus === "error" && (
               <Button
                 variant="outline"
-                className="mt-4 border-red-200 text-red-700 hover:bg-red-50 hover:border-red-300 bg-transparent"
+                className="mt-4 border-red-200 text-red-500 hover:bg-red-50 hover:border-red-300 bg-transparent"
                 onClick={() => setUploadStatus("idle")}
               >
                 Try Again
@@ -201,7 +201,7 @@ export function ImageUpload() {
           </div>
         </div>
 
-        <div className="mt-4 text-xs text-gray-500 text-center">
+        <div className="mt-4 text-xs text-muted-foreground text-center">
           <p>💡 For best results, use a clear, front-facing photo with good lighting</p>
         </div>
       </CardContent>
