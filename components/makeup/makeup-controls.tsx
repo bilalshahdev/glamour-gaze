@@ -167,7 +167,7 @@ export function MakeupControls() {
           <CardTitle className="text-lg text-gray-800">Controls</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 ">
             <Button
               variant="outline"
               size="sm"
@@ -212,14 +212,14 @@ export function MakeupControls() {
                 </div>
               </DialogContent>
             </Dialog>
-          </div>
+         
 
-          <div className="grid grid-cols-2 gap-2">
+          {/* <div className="grid grid-cols-2 gap-2"> */}
             <Button
               size="sm"
               onClick={downloadImage}
               disabled={!currentImage}
-              className="flex items-center gap-2 bg-gradient-to-r from-rose-500 via-orange-500 to-amber-500 hover:from-rose-600 hover:via-orange-600 hover:to-amber-600 text-white"
+              className="flex items-center gap-2 bg-fuchsia-gradient text-white"
             >
               <Download className="h-4 w-4" />
               Download
@@ -234,8 +234,8 @@ export function MakeupControls() {
             >
               <Share2 className="h-4 w-4" />
               Share
-            </Button>
-          </div>
+            </Button> </div>
+          {/* </div> */}
 
           <Dialog open={isSavedLooksOpen} onOpenChange={setIsSavedLooksOpen}>
             <DialogTrigger asChild>

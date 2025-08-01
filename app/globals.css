@@ -6,6 +6,7 @@
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
+    --signature: 292.61 96% 57.99%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
@@ -32,24 +33,24 @@
   }
 
   .dark {
-    --background: 15 15 23;
+    --background: 228.82 85% 5%;
     --foreground: 210 40% 98%;
-    --card: 15 15 23;
+    --card: 228.82 85% 5%;
     --card-foreground: 210 40% 98%;
-    --popover: 15 15 23;
+    --popover: 228.82 85% 5%;
     --popover-foreground: 210 40% 98%;
     --primary: 210 40% 98%;
-    --primary-foreground: 15 15 23;
-    --secondary: 30 30 40;
+    --primary-foreground: 228.82 85% 5%;
+    --secondary: 222.34 49% 11%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 30 30 40;
+    --muted: 222.34 49% 11%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 30 30 40;
+    --accent: 222.34 49% 11%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 30 30 40;
-    --input: 30 30 40;
+    --border: 222.34 49% 11%;
+    --input: 222.34 49% 11%;
     --ring: 212.7 26.8% 83.9%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
@@ -146,11 +147,25 @@
 
 /* Gradient backgrounds */
 .bg-fuchsia-gradient {
-  background: linear-gradient(135deg, #e879f9 0%, #d946ef 25%, #c026d3 50%, #a21caf 75%, #86198f 100%);
+  background: linear-gradient(
+    135deg,
+    #e879f9 0%,
+    #d946ef 25%,
+    #c026d3 50%,
+    #a21caf 75%,
+    #86198f 100%
+  );
 }
 
 .bg-fuchsia-gradient-dark {
-  background: linear-gradient(135deg, #4a044e 0%, #701a75 25%, #86198f 50%, #a21caf 75%, #c026d3 100%);
+  background: linear-gradient(
+    135deg,
+    #4a044e 0%,
+    #701a75 25%,
+    #86198f 50%,
+    #a21caf 75%,
+    #c026d3 100%
+  );
 }
 
 /* Hover effects - Fixed scaling issue */
@@ -160,7 +175,8 @@
 
 .hover-lift:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15),
+    0 10px 10px -5px rgba(0, 0, 0, 0.1);
 }
 
 /* Remove hover effects from hero section */
@@ -219,5 +235,12 @@
 
 /* Slider styling */
 .slider-track {
-  background: linear-gradient(135deg, #e879f9 0%, #d946ef 25%, #c026d3 50%, #a21caf 75%, #86198f 100%);
+  background: linear-gradient(
+    135deg,
+    #e879f9 0%,
+    #d946ef 25%,
+    #c026d3 50%,
+    #a21caf 75%,
+    #86198f 100%
+  );
 }

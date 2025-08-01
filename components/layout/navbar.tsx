@@ -50,7 +50,7 @@ export function Navbar({ user }: NavbarProps) {
   ]
 
   return (
-    <nav className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-lg border-b border-fuchsia-200/20 dark:border-fuchsia-800/20 sticky top-0 z-50">
+    <nav className="bg-background/85 backdrop-blur border-b sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -59,7 +59,7 @@ export function Navbar({ user }: NavbarProps) {
               <Eye className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-fuchsia-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              <h1 className="text-base sm:text-xl font-bold bg-gradient-to-r from-fuchsia-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                 Glamour Gaze
               </h1>
               <p className="text-xs text-muted-foreground hidden sm:block">AI Beauty Studio</p>
@@ -67,7 +67,7 @@ export function Navbar({ user }: NavbarProps) {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8 animate-fadeInUp">
+          <div className="hidden lg:flex items-center space-x-8 animate-fadeInUp h-full">
             {navLinks.map((link) => {
               const Icon = link.icon
               const isActive = pathname === link.href
@@ -75,10 +75,10 @@ export function Navbar({ user }: NavbarProps) {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 hover-lift ${
+                  className={`flex items-center gap-2 border-b-2 h-full border-transparent transition-all text-sm ${
                     isActive
-                      ? "bg-fuchsia-gradient text-white font-medium shadow-lg"
-                      : "text-foreground hover:text-fuchsia-600 hover:bg-fuchsia-50 dark:hover:bg-fuchsia-950/20"
+                      ? "text-signature border-signature font-medium"
+                      : "text-foreground hover:text-signature"
                   }`}
                 >
                   <Icon className="h-4 w-4" />
@@ -89,7 +89,7 @@ export function Navbar({ user }: NavbarProps) {
           </div>
 
           {/* User Menu */}
-          <div className="flex items-center gap-4 animate-slideInRight">
+          <div className="flex items-center gap-2 animate-slideInRight">
             <Button
               variant="ghost"
               size="sm"
@@ -103,7 +103,7 @@ export function Navbar({ user }: NavbarProps) {
 
             {user ? (
               <div className="flex items-center gap-3">
-                <div className="hidden sm:flex items-center gap-2 text-sm text-foreground">
+                <div className="hidden lg:flex items-center gap-2 text-sm text-foreground">
                   <User className="h-4 w-4" />
                   <span className="font-medium">{user.name}</span>
                 </div>
@@ -114,7 +114,7 @@ export function Navbar({ user }: NavbarProps) {
                   className="flex items-center gap-2 border-fuchsia-200 text-fuchsia-700 hover:bg-fuchsia-50 hover:border-fuchsia-300 dark:border-fuchsia-800 dark:text-fuchsia-300 dark:hover:bg-fuchsia-950/20 bg-transparent"
                 >
                   <LogOut className="h-4 w-4" />
-                  <span className="hidden sm:inline">Sign Out</span>
+                  {/* <span className="hidden sm:inline">Sign Out</span> */}
                 </Button>
               </div>
             ) : (
@@ -124,7 +124,7 @@ export function Navbar({ user }: NavbarProps) {
             )}
 
             {/* Mobile menu button */}
-            <Button variant="ghost" size="sm" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <Button variant="ghost" size="sm" className="lg:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
@@ -132,7 +132,7 @@ export function Navbar({ user }: NavbarProps) {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-fuchsia-200/20 dark:border-fuchsia-800/20 animate-fadeInUp">
+          <div className="lg:hidden py-4 border-t border-fuchsia-200/20 dark:border-fuchsia-800/20 animate-fadeInUp">
             <div className="flex flex-col space-y-2">
               {navLinks.map((link) => {
                 const Icon = link.icon
