@@ -211,7 +211,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div className="grid md:grid-cols-2 gap-8 items-start">
               <div className="animate-slideInLeft">
                 <ImageUpload />
               </div>

@@ -239,8 +239,8 @@ export function AuthForm() {
 
   /* UI */
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-rose-50 via-amber-50 to-orange-50">
-      <Card className="w-full max-w-md shadow-xl border-0 bg-white/95 backdrop-blur-sm">
+    <div className="flex items-center justify-center min-h-screen bg-secondary">
+      <Card className="w-full max-w-md shadow-xl border-0 bg-background/95 backdrop-blur-sm">
         <CardHeader className="text-center space-y-4">
           <div className="flex items-center justify-center">
             <div className="p-3 bg-fuchsia-gradient rounded-2xl shadow-lg">
@@ -263,7 +263,7 @@ export function AuthForm() {
             onValueChange={(v) => setTab(v as any)}
             className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-2 bg-gray-100">
+            <TabsList className="grid w-full grid-cols-2 bg-secondary">
               <TabsTrigger
                 value="signin"
                 className="data-[state=active]:bg-signature data-[state=active]:text-white"
@@ -287,7 +287,7 @@ export function AuthForm() {
                     placeholder="Enter your email"
                     value={signInValues.email}
                     onChange={handleInput("signin", "email")}
-                    className={`border-gray-200 focus:border-signature focus:ring-signature ${
+                    className={`border-gray-200 focus:border-signature focus:ring-signature bg-background ${
                       errors.email ? "border-red-500" : ""
                     }`}
                   />
@@ -305,7 +305,7 @@ export function AuthForm() {
                     placeholder="Enter your password"
                     value={signInValues.password}
                     onChange={handleInput("signin", "password")}
-                    className={`border-gray-200 focus:border-signature focus:ring-signature ${
+                    className={`border-gray-200 focus:border-signature focus:ring-signature bg-background ${
                       errors.password ? "border-red-500" : ""
                     }`}
                   />
@@ -337,7 +337,7 @@ export function AuthForm() {
                     placeholder="Enter your full name"
                     value={signUpValues.name}
                     onChange={handleInput("signup", "name")}
-                    className={`border-gray-200 focus:border-signature focus:ring-signature ${
+                    className={`border-gray-200 focus:border-signature focus:ring-signature bg-background ${
                       errors.name ? "border-red-500" : ""
                     }`}
                   />
@@ -357,7 +357,7 @@ export function AuthForm() {
                     onChange={handleInput("signup", "age")}
                     min="13"
                     max="120"
-                    className={`border-gray-200 focus:border-signature focus:ring-signature ${
+                    className={`border-gray-200 focus:border-signature focus:ring-signature bg-background ${
                       errors.age ? "border-red-500" : ""
                     }`}
                   />
@@ -375,7 +375,7 @@ export function AuthForm() {
                     placeholder="Enter your email"
                     value={signUpValues.email}
                     onChange={handleInput("signup", "email")}
-                    className={`border-gray-200 focus:border-signature focus:ring-signature ${
+                    className={`border-gray-200 focus:border-signature focus:ring-signature bg-background ${
                       errors.email ? "border-red-500" : ""
                     }`}
                   />
@@ -393,7 +393,7 @@ export function AuthForm() {
                     placeholder="Create a password (min 6 characters)"
                     value={signUpValues.password}
                     onChange={handleInput("signup", "password")}
-                    className={`border-gray-200 focus:border-signature focus:ring-signature ${
+                    className={`border-gray-200 focus:border-signature focus:ring-signature bg-background ${
                       errors.password ? "border-red-500" : ""
                     }`}
                   />

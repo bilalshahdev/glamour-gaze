@@ -162,9 +162,9 @@ export function MakeupControls() {
 
   return (
     <>
-      <Card className="border-rose-100 shadow-lg bg-white/95 backdrop-blur-sm">
+      <Card className="border-rose-100 shadow-lg bg-background/95 backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-lg text-gray-800">Controls</CardTitle>
+          <CardTitle className="text-lg text-foreground">Controls</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 ">
@@ -173,7 +173,7 @@ export function MakeupControls() {
               size="sm"
               onClick={resetMakeup}
               disabled={!hasAnyMakeup}
-              className="flex items-center gap-2 border-rose-200 text-rose-700 hover:bg-rose-50 hover:border-rose-300 bg-transparent"
+              className="flex items-center gap-2 text-signature border-signature bg-transparent"
             >
               <RotateCcw className="h-4 w-4" />
               Reset
@@ -185,7 +185,7 @@ export function MakeupControls() {
                   variant="outline"
                   size="sm"
                   disabled={!hasAnyMakeup}
-                  className="flex items-center gap-2 border-rose-200 text-rose-700 hover:bg-rose-50 hover:border-rose-300 bg-transparent"
+                  className="flex items-center gap-2 text-signature border-signature bg-transparent"
                 >
                   <Save className="h-4 w-4" />
                   Save
@@ -230,7 +230,7 @@ export function MakeupControls() {
               size="sm"
               onClick={shareImage}
               disabled={!currentImage}
-              className="flex items-center gap-2 border-rose-200 text-rose-700 hover:bg-rose-50 hover:border-rose-300 bg-transparent"
+              className="flex items-center gap-2 text-signature border-signature bg-transparent"
             >
               <Share2 className="h-4 w-4" />
               Share
@@ -242,7 +242,7 @@ export function MakeupControls() {
               <Button
                 variant="outline"
                 size="sm"
-                className="w-full flex items-center gap-2 border-rose-200 text-rose-700 hover:bg-rose-50 hover:border-rose-300 bg-transparent"
+                className="w-full flex items-center gap-2 bg-fuchsia-gradient"
               >
                 <ImageIcon className="h-4 w-4" />
                 Gallery ({savedLooks.length})
