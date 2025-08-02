@@ -6,10 +6,6 @@ interface LiveCameraProps {
   onCapture: (imageData: string) => void;
 }
 
-interface LiveCameraProps {
-  onCapture: (imageData: string) => void;
-}
-
 export function LiveCamera({ onCapture }: LiveCameraProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -19,13 +15,17 @@ export function LiveCamera({ onCapture }: LiveCameraProps) {
   useEffect(() => {
     const startCamera = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+        });
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
           setIsCameraActive(true);
         }
       } catch (err) {
-        setError("Failed to access camera. Please make sure you allow camera access.");
+        setError(
+          "Failed to access camera. Please make sure you allow camera access."
+        );
       }
     };
 
@@ -34,26 +34,35 @@ export function LiveCamera({ onCapture }: LiveCameraProps) {
     }
 
     return () => {
-      if (videoRef.current && videoRef.current.srcObject) {
-        const tracks = videoRef.current.srcObject.getTracks();
-        tracks.forEach((track: MediaStreamTrack) => track.stop());
+      if (
+        videoRef.current &&
+        videoRef.current.srcObject instanceof MediaStream
+      ) {
+        const stream = videoRef.current.srcObject;
+        const tracks = stream.getTracks();
+        tracks.forEach((track) => track.stop());
       }
     };
   }, [isCameraActive]);
 
   const captureImage = () => {
+    console.log("clicked");
     if (canvasRef.current && videoRef.current) {
+      console.log("inside if");
       const canvas = canvasRef.current;
       const video = videoRef.current;
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       const ctx = canvas.getContext("2d");
       if (ctx) {
+        console.log("inside ctx");
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         const imageData = canvas.toDataURL("image/jpeg");
         onCapture(imageData);
       }
+      console.log("inside inner else");
     }
+    console.log("inside outer else");
   };
 
   if (error) {
@@ -75,6 +84,10 @@ export function LiveCamera({ onCapture }: LiveCameraProps) {
           className="w-full h-full object-cover"
         />
       </div>
+
+      {/* Hidden canvas for capturing the frame */}
+      <canvas ref={canvasRef} style={{ display: "none" }} />
+
       <button
         onClick={captureImage}
         className="w-full px-4 py-2 bg-fuchsia-gradient text-white rounded-lg hover:opacity-90 transition-opacity"

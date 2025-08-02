@@ -674,7 +674,7 @@ export function ColorPalette() {
 
       <CardContent className="space-y-4">
         {/* Opacity Control */}
-        <div className="space-y-2">
+        <div className="space-y-2 border rounded-lg shadow p-2">
           <label className="text-sm font-medium text-foreground">
             Opacity: {Math.round(customOpacity * 100)}%
           </label>
