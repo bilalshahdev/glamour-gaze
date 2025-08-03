@@ -1,88 +1,109 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { useMakeupStore } from "@/lib/stores/makeup-store"
-import { useToast } from "@/hooks/use-toast"
-import { Download, Save, RotateCcw, Share2, ImageIcon, Trash2 } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useMakeupStore } from "@/lib/stores/makeup-store";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Download,
+  Save,
+  RotateCcw,
+  Share2,
+  ImageIcon,
+  Trash2,
+} from "lucide-react";
 
 export function MakeupControls() {
-  const { makeupConfig, resetMakeup, currentImage, saveLook, savedLooks, deleteSavedLook } = useMakeupStore()
-  const { toast } = useToast()
-  const [saveName, setSaveName] = useState("")
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [isSavedLooksOpen, setIsSavedLooksOpen] = useState(false)
+  const {
+    makeupConfig,
+    resetMakeup,
+    currentImage,
+    saveLook,
+    savedLooks,
+    deleteSavedLook,
+  } = useMakeupStore();
+  const { toast } = useToast();
+  const [saveName, setSaveName] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isSavedLooksOpen, setIsSavedLooksOpen] = useState(false);
 
   const saveTrial = async () => {
-    const canvas = document.querySelector("canvas")
+    const canvas = document.querySelector("canvas");
     if (!canvas || !saveName.trim()) {
       toast({
         title: "Cannot Save",
-        description: "Please enter a name for your look and ensure you have an image.",
+        description:
+          "Please enter a name for your look and ensure you have an image.",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
     try {
       // Convert canvas to blob and create URL
       canvas.toBlob((blob) => {
         if (blob) {
-          const imageUrl = URL.createObjectURL(blob)
-          saveLook(saveName.trim(), imageUrl)
+          const imageUrl = URL.createObjectURL(blob);
+          saveLook(saveName.trim(), imageUrl);
 
           toast({
             title: "Look Saved! ✨",
             description: `"${saveName}" has been saved to your gallery.`,
-          })
+          });
 
-          setSaveName("")
-          setIsDialogOpen(false)
+          setSaveName("");
+          setIsDialogOpen(false);
         }
-      })
+      });
     } catch (error) {
       toast({
         title: "Save Failed",
         description: "Failed to save your look. Please try again.",
         variant: "destructive",
-      })
+      });
     }
-  }
+  };
 
   const downloadImage = () => {
-    const canvas = document.querySelector("canvas")
+    const canvas = document.querySelector("canvas");
     if (!canvas) {
       toast({
         title: "No image to download",
         description: "Please upload an image and apply makeup first.",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    const link = document.createElement("a")
-    link.download = `glamour-gaze-${Date.now()}.png`
-    link.href = canvas.toDataURL()
-    link.click()
+    const link = document.createElement("a");
+    link.download = `glamour-gaze-${Date.now()}.png`;
+    link.href = canvas.toDataURL();
+    link.click();
 
     toast({
       title: "Image downloaded! 📸",
       description: "Your makeup trial has been saved to your device.",
-    })
-  }
+    });
+  };
 
   const shareImage = async () => {
-    const canvas = document.querySelector("canvas")
+    const canvas = document.querySelector("canvas");
     if (!canvas) {
       toast({
         title: "No image to share",
         description: "Please upload an image and apply makeup first.",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
     try {
@@ -92,73 +113,79 @@ export function MakeupControls() {
         canvas.toBlob(async (blob) => {
           if (blob && navigator.clipboard && navigator.clipboard.write) {
             try {
-              await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })])
+              await navigator.clipboard.write([
+                new ClipboardItem({ "image/png": blob }),
+              ]);
               toast({
                 title: "Copied to clipboard! 📋",
                 description: "Your makeup trial image has been copied.",
-              })
+              });
             } catch (clipboardError) {
               // Final fallback: download
-              downloadImage()
+              downloadImage();
             }
           } else {
             // Final fallback: download
-            downloadImage()
+            downloadImage();
           }
-        })
-        return
+        });
+        return;
       }
 
       canvas.toBlob(async (blob) => {
         if (blob) {
           try {
-            const file = new File([blob], "glamour-gaze-trial.png", { type: "image/png" })
+            const file = new File([blob], "glamour-gaze-trial.png", {
+              type: "image/png",
+            });
             await navigator.share({
               title: "My Glamour Gaze Makeover",
               text: "Check out my virtual makeup look! ✨",
               files: [file],
-            })
+            });
           } catch (shareError: any) {
             if (shareError.name === "NotAllowedError") {
               // User cancelled or permission denied, try clipboard
               if (navigator.clipboard && navigator.clipboard.write) {
                 try {
-                  await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })])
+                  await navigator.clipboard.write([
+                    new ClipboardItem({ "image/png": blob }),
+                  ]);
                   toast({
                     title: "Copied to clipboard! 📋",
                     description: "Your makeup trial image has been copied.",
-                  })
+                  });
                 } catch (clipboardError) {
-                  downloadImage()
+                  downloadImage();
                 }
               } else {
-                downloadImage()
+                downloadImage();
               }
             } else {
-              throw shareError
+              throw shareError;
             }
           }
         }
-      })
+      });
     } catch (error) {
-      console.error("Share error:", error)
+      console.error("Share error:", error);
       toast({
         title: "Share not available",
         description: "Downloading image instead.",
-      })
-      downloadImage()
+      });
+      downloadImage();
     }
-  }
+  };
 
   const deleteLook = (id: string) => {
-    deleteSavedLook(id)
+    deleteSavedLook(id);
     toast({
       title: "Look Deleted",
       description: "The saved look has been removed from your gallery.",
-    })
-  }
+    });
+  };
 
-  const hasAnyMakeup = Object.keys(makeupConfig).length > 0
+  const hasAnyMakeup = Object.keys(makeupConfig).length > 0;
 
   return (
     <>
@@ -178,7 +205,6 @@ export function MakeupControls() {
               <RotateCcw className="h-4 w-4" />
               Reset
             </Button>
-
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button
@@ -202,19 +228,24 @@ export function MakeupControls() {
                     onChange={(e) => setSaveName(e.target.value)}
                   />
                   <div className="flex gap-2">
-                    <Button onClick={saveTrial} disabled={!saveName.trim()} className="flex-1">
+                    <Button
+                      onClick={saveTrial}
+                      disabled={!saveName.trim()}
+                      className="flex-1"
+                    >
                       Save Look
                     </Button>
-                    <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsDialogOpen(false)}
+                    >
                       Cancel
                     </Button>
                   </div>
                 </div>
               </DialogContent>
             </Dialog>
-         
-
-          {/* <div className="grid grid-cols-2 gap-2"> */}
+            {/* <div className="grid grid-cols-2 gap-2"> */}
             <Button
               size="sm"
               onClick={downloadImage}
@@ -224,7 +255,6 @@ export function MakeupControls() {
               <Download className="h-4 w-4" />
               Download
             </Button>
-
             <Button
               variant="outline"
               size="sm"
@@ -234,7 +264,8 @@ export function MakeupControls() {
             >
               <Share2 className="h-4 w-4" />
               Share
-            </Button> </div>
+            </Button>{" "}
+          </div>
           {/* </div> */}
 
           <Dialog open={isSavedLooksOpen} onOpenChange={setIsSavedLooksOpen}>
@@ -269,8 +300,12 @@ export function MakeupControls() {
                         />
                       </div>
                       <div className="mt-2">
-                        <p className="font-medium text-sm truncate">{look.name}</p>
-                        <p className="text-xs text-muted-foreground">{new Date(look.createdAt).toLocaleDateString()}</p>
+                        <p className="font-medium text-sm truncate">
+                          {look.name}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(look.createdAt).toLocaleDateString()}
+                        </p>
                       </div>
                       <Button
                         variant="destructive"
@@ -297,5 +332,5 @@ export function MakeupControls() {
         </CardContent>
       </Card>
     </>
-  )
+  );
 }

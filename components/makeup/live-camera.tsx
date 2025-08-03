@@ -17,6 +17,9 @@ export function LiveCamera({ onCapture }: LiveCameraProps) {
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+  const [isStreamStarted, setIsStreamStarted] = useState(false);
+  const [hasUserStarted, setHasUserStarted] = useState(false);
 
   const { toast } = useToast();
   const {
@@ -25,31 +28,28 @@ export function LiveCamera({ onCapture }: LiveCameraProps) {
     setIsProcessing: setStoreProcessing,
   } = useMakeupStore();
 
-  useEffect(() => {
-    const startCamera = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-        });
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          setIsCameraActive(true);
-        }
-      } catch (err) {
-        setError("Failed to access camera. Please allow camera access.");
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        setHasUserStarted(true); // ✅ mark as clicked
       }
-    };
-
-    if (!isCameraActive) {
-      startCamera();
+    } catch (err) {
+      setError("Failed to access camera. Please allow camera access.");
     }
+  };
 
-    return () => {
-      if (videoRef.current?.srcObject instanceof MediaStream) {
-        videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
-      }
-    };
-  }, [isCameraActive]);
+  const stopCamera = () => {
+    if (videoRef.current?.srcObject instanceof MediaStream) {
+      videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+    }
+    setIsCameraActive(false);
+  };
+
+  useEffect(() => {
+    return () => stopCamera();
+  }, []);
 
   const captureImage = () => {
     const video = videoRef.current;
@@ -62,23 +62,14 @@ export function LiveCamera({ onCapture }: LiveCameraProps) {
 
     setIsProcessing(true);
     setStoreProcessing(true);
-
-    // Pause video to freeze frame
     video.pause();
 
-    // Set canvas size to video frame
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-
     const ctx = canvas.getContext("2d");
-    if (!ctx) {
-      console.error("Canvas context is null.");
-      return;
-    }
+    if (!ctx) return;
 
-    // Draw current video frame to canvas
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
     const base64Image = canvas.toDataURL("image/jpeg");
 
     toast({
@@ -86,7 +77,6 @@ export function LiveCamera({ onCapture }: LiveCameraProps) {
       description: "Analyzing your face...",
     });
 
-    // Delay before processing for animation
     setTimeout(async () => {
       try {
         const blob = await (await fetch(base64Image)).blob();
@@ -124,7 +114,6 @@ export function LiveCamera({ onCapture }: LiveCameraProps) {
             }
           } catch (err) {
             URL.revokeObjectURL(imageUrl);
-            console.error("Face detection error:", err);
             toast({
               title: "Processing failed",
               description: "Could not analyze the photo. Try again.",
@@ -151,7 +140,6 @@ export function LiveCamera({ onCapture }: LiveCameraProps) {
 
         img.src = imageUrl;
       } catch (error) {
-        console.error("Capture error:", error);
         toast({
           title: "Capture error",
           description: "Something went wrong while capturing.",
@@ -161,25 +149,8 @@ export function LiveCamera({ onCapture }: LiveCameraProps) {
         setIsProcessing(false);
         setStoreProcessing(false);
       }
-    }, 3000); // 3s delay
+    }, 3000);
   };
-
-  const [isReady, setIsReady] = useState(false);
-
-  useEffect(() => {
-    if (videoRef.current && canvasRef.current) {
-      setIsReady(true);
-    }
-  }, []);
-
-  if (error) {
-    return (
-      <div className="flex flex-col items-center justify-center p-4 text-center">
-        <Camera className="h-12 w-12 text-red-500 mb-2" />
-        <p className="text-red-500">{error}</p>
-      </div>
-    );
-  }
 
   const resumeCamera = () => {
     const video = videoRef.current;
@@ -192,7 +163,6 @@ export function LiveCamera({ onCapture }: LiveCameraProps) {
     }
   };
 
-  // Only allow keypress when ready
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if ((e.key === "c" || e.key === "C") && isReady && !isProcessing) {
@@ -203,34 +173,72 @@ export function LiveCamera({ onCapture }: LiveCameraProps) {
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, [isProcessing, isReady]);
 
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center p-4 text-center">
+        <Camera className="h-12 w-12 text-red-500 mb-2" />
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+  }
+  const isMobilePortrait =
+    typeof window !== "undefined"
+      ? window.innerHeight > window.innerWidth
+      : false;
+
+  // className={`object-cover w-full ${isMobilePortrait ? "h-[80vh]" : "aspect-video"}`}
+
   return (
-    <div className="relative aspect-video rounded-lg overflow-hidden">
+    <div
+      className={`relative  rounded-lg overflow-hidden ${
+        isMobilePortrait ? "h-[80vh]" : "aspect-video"
+      }`}
+    >
+      {!isStreamStarted && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/40">
+          <button
+            onClick={startCamera}
+            className="bg-pink-500 text-white px-6 py-3 rounded-lg text-lg shadow-md hover:bg-pink-600 transition"
+          >
+            Start Camera
+          </button>
+        </div>
+      )}
+
       <video
         ref={videoRef}
         autoPlay
         playsInline
-        className="w-full h-full object-cover"
+        onCanPlay={() => {
+          setIsStreamStarted(true);
+          setIsReady(true); // ✅ ensure camera is ready
+        }}
+        className="w-full h-full object-cover scale-x-[-1]"
       />
+
       <canvas ref={canvasRef} style={{ display: "none" }} />
+
       {isProcessing && (
         <div className="absolute inset-0 bg-white/70 animate-pulse z-50 pointer-events-none" />
       )}
 
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10">
-        <button
-          onClick={captureImage}
-          disabled={isProcessing || !isReady}
-          className={`w-16 h-16 rounded-full border-4 flex items-center justify-center transition-all ${
-            isProcessing
-              ? "border-gray-300 bg-gray-200 cursor-not-allowed"
-              : "border-white bg-white/80 hover:bg-white"
-          }`}
-          aria-label="Capture photo"
-          role="button"
-        >
-          <Camera className="h-6 w-6 text-black" />
-        </button>
-      </div>
+      {isStreamStarted && (
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10">
+          <button
+            onClick={captureImage}
+            disabled={isProcessing || !isReady}
+            className={`w-16 h-16 rounded-full border-4 flex items-center justify-center transition-all ${
+              isProcessing
+                ? "border-gray-300 bg-gray-200 cursor-not-allowed"
+                : "border-white bg-white/80 hover:bg-white"
+            }`}
+            aria-label="Capture photo"
+            role="button"
+          >
+            <Camera className="h-6 w-6 text-black" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
