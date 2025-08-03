@@ -14,6 +14,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import imageCompression from "browser-image-compression";
 
 export function ImageUpload() {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -32,11 +33,19 @@ export function ImageUpload() {
     setStoreProcessing(true);
     setUploadStatus("processing");
 
-    try {
-      // Create image URL
-      const imageUrl = URL.createObjectURL(file);
+    let imageUrl = "";
 
-      // Create image element for processing
+    try {
+      // Compress the image first (recommended for mobile/large files)
+      const compressedFile = await imageCompression(file, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1024,
+        useWebWorker: true,
+      });
+
+      // Generate object URL for the compressed image
+      imageUrl = URL.createObjectURL(compressedFile);
+
       const img = new Image();
       img.crossOrigin = "anonymous";
 
@@ -81,28 +90,29 @@ export function ImageUpload() {
           setStoreProcessing(false);
         }
       };
-
       img.onerror = () => {
-        console.error("Image load error");
+        console.error("Failed to load image.");
         setUploadStatus("error");
         toast({
           title: "Invalid image",
           description: "Please upload a valid image file.",
           variant: "destructive",
         });
+        URL.revokeObjectURL(imageUrl);
         setIsProcessing(false);
         setStoreProcessing(false);
       };
 
       img.src = imageUrl;
     } catch (error) {
-      console.error("Image processing error:", error);
+      console.error("Image compression or loading error:", error);
       setUploadStatus("error");
       toast({
         title: "Upload error",
-        description: "Failed to upload the image. Please try again.",
+        description: "Failed to process the image. Please try again.",
         variant: "destructive",
       });
+      if (imageUrl) URL.revokeObjectURL(imageUrl);
       setIsProcessing(false);
       setStoreProcessing(false);
     }
@@ -110,9 +120,16 @@ export function ImageUpload() {
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
-    if (file) {
+
+    if (file && file.type.startsWith("image/")) {
       console.log("File dropped:", file.name, file.size, file.type);
       processImage(file);
+    } else {
+      toast({
+        title: "Unsupported file type",
+        description: "Only image files are supported.",
+        variant: "destructive",
+      });
     }
   }, []);
 
