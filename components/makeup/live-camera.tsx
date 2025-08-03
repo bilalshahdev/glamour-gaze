@@ -149,7 +149,7 @@ export function LiveCamera({ onCapture }: LiveCameraProps) {
         setIsProcessing(false);
         setStoreProcessing(false);
       }
-    }, 3000);
+    }, 100);
   };
 
   const resumeCamera = () => {
